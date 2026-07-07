@@ -32,10 +32,10 @@ struct WelcomeView: View {
 
             // Buttons
             VStack(spacing: 16) {
-                Button {
-                    // We will add navigation later
+                NavigationLink {
+                    RouteSelectionView()
                 } label: {
-                    Text("Get Started")
+                    Label("Get Started", systemImage: "arrow.right")
                         .font(.system(size: 17, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .frame(height: 56)
@@ -44,8 +44,8 @@ struct WelcomeView: View {
                         .clipShape(Capsule())
                 }
 
-                Button {
-                    // We will add guest navigation later
+                NavigationLink {
+                    RouteSelectionView()
                 } label: {
                     Label("Continue as Guest", systemImage: "person")
                         .font(.system(size: 17, weight: .semibold))
