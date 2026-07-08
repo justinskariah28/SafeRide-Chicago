@@ -1,9 +1,15 @@
 import SwiftUI
+import MapKit
 
 struct RouteSelectionView: View {
     @State private var startingLocation = "Current Location"
     @State private var destination = ""
     @State private var selectedMode: TravelMode = .walking
+    @State private var resolvedDestination: MKMapItem?
+    @State private var isSearching = false
+    @State private var shouldShowPreferences = false
+    @State private var errorMessage = ""
+    @State private var showingError = false
 
     private var canContinue: Bool {
         !startingLocation.trimmingCharacters(in: .whitespaces).isEmpty &&

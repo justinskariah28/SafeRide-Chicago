@@ -1,3 +1,4 @@
+
 import SwiftUI
 
 struct AnalyzingRoutesView: View {
@@ -19,29 +20,18 @@ struct AnalyzingRoutesView: View {
                     .font(.system(size: 28, weight: .bold))
                     .foregroundStyle(Color.safeRoutePurple)
 
-                Text(
-                    "Comparing available routes using your travel and accessibility preferences."
-                )
-                .font(.system(size: 17))
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+                Text("Comparing available routes using your travel and accessibility preferences.")
+                    .font(.system(size: 17))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
 
             VStack(alignment: .leading, spacing: 12) {
-                Label(
-                    "\(startingLocation) to \(destination)",
-                    systemImage: "mappin.and.ellipse"
-                )
+                Label("\(startingLocation) to \(destination)", systemImage: "mappin.and.ellipse")
 
-                Label(
-                    travelMode.rawValue,
-                    systemImage: travelMode.systemImage
-                )
+                Label(travelMode.rawValue, systemImage: travelMode.systemImage)
 
-                Label(
-                    "\(selectedPreferences.count) preferences selected",
-                    systemImage: "checkmark.circle"
-                )
+                Label("\(selectedPreferences.count) preferences selected", systemImage: "checkmark.circle")
             }
             .font(.system(size: 16))
             .padding(20)
@@ -61,10 +51,10 @@ struct AnalyzingRoutesView: View {
     AnalyzingRoutesView(
         startingLocation: "Kaplan Institute",
         destination: "UIC",
-        travelMode: .walking,
+        travelMode: .transit,
         selectedPreferences: [
-            "Step-free route",
-            "Well-lit streets"
+            "Elevator-accessible stations",
+            "Minimize transfers"
         ]
     )
 }
