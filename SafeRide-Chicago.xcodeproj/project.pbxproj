@@ -10,9 +10,22 @@
 		CE8D822A2FFD4E51004907D0 /* SafeRide-Chicago.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SafeRide-Chicago.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CEBBE06D2FFEA09D007E3D14 /* Exceptions for "SafeRide-Chicago" folder in "SafeRide-Chicago" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Untitled.swift,
+			);
+			target = CE8D82292FFD4E51004907D0 /* SafeRide-Chicago */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CE8D822C2FFD4E51004907D0 /* SafeRide-Chicago */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CEBBE06D2FFEA09D007E3D14 /* Exceptions for "SafeRide-Chicago" folder in "SafeRide-Chicago" target */,
+			);
 			path = "SafeRide-Chicago";
 			sourceTree = "<group>";
 		};
