@@ -75,7 +75,7 @@ struct RouteSelectionView: View {
                     Image(systemName: selectedMode.systemImage)
                         .font(.system(size: 24))
                         .foregroundStyle(Color.safeRoutePurple)
-                        .frame(width: 42, height: 42)
+                        .frame(width: 75, height: 42)
                         .background(Color.safeRoutePurple.opacity(0.10))
                         .clipShape(Circle())
 
