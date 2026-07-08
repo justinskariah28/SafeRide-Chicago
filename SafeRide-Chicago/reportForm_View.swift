@@ -25,17 +25,19 @@ struct SwiftUIView: View {
         }
         .padding(20)
         VStack(alignment: .leading , spacing: 20){
-            //question
+            //questions
               Text("* Issue with recommend Route?")
               Text("* construction work?")
               Text("* Road/entrance blocked?")
               Text("* No accessible entrances?")
               Text("* Dim lighting?")
               Text("* Too Crowded?")
-              Text("* Other:_")
+              Text("* Other:______________")
               Text("Please descibe your issue below")
-                TextField("Description", text: $text1)
-                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                TextEditor(text: $text1)
+                .frame(height: 100)
+                .padding(8)
+                .overlay( RoundedRectangle(cornerRadius: 8) .stroke(Color.gray.opacity(0.2)))
         }
         .padding(20)
         Button("Submit") {
