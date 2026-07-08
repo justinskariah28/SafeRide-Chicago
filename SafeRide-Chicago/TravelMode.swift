@@ -1,3 +1,4 @@
+
 import Foundation
 
 enum TravelMode: String, CaseIterable, Identifiable, Hashable {
@@ -13,10 +14,8 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .walking:
             return "figure.walk"
-
         case .transit:
             return "bus.fill"
-
         case .driving:
             return "car.fill"
         }
@@ -26,10 +25,8 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .walking:
             return "What matters for your walk?"
-
         case .transit:
             return "What matters for your transit trip?"
-
         case .driving:
             return "What matters for your drive?"
         }
@@ -39,10 +36,8 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .walking:
             return "Choose features that make your walking route safer and easier."
-
         case .transit:
             return "Choose features that make your public transit trip more accessible."
-
         case .driving:
             return "Choose features that make driving and arriving easier."
         }
@@ -79,7 +74,7 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                 ),
                 TravelPreference(
                     title: "Low-sensory route",
-                    description: "Avoid especially crowded or noisy areas",
+                    description: "Avoid crowded or noisy areas",
                     systemImage: "speaker.slash.fill"
                 ),
                 TravelPreference(
