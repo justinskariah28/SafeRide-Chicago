@@ -2,71 +2,190 @@
 //  ReportFormView.swift
 //  SafeRide-Chicago
 //
-//  Created by 6 BGCC Loan Library on 7/14/26.
-//
-
-//
-//  SwiftUIView.swift
-//  SafeRide-Chicago
-//
-//
+//  Improved styling for report form
 //
 import PhotosUI
 import SwiftUI
 
-struct SwiftUIView: View {
+struct ReportFormView: View {
     @State private var name = ""
     @State private var email = ""
-    @State private var text1 = ""
-    @State private var selectedItem: [PhotosPickerItem] = []
+    @State private var descriptionText = ""
+    @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var submitting = false
+
     var body: some View {
-        ScrollView{
-            VStack(spacing: 8) {
-                Text("Report Form")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(Color.red)
-                    .italic()
-                    .underline()
-                Text("Please fill out the form below")
-                TextField("Name", text: $name)
-                TextField("Email", text: $email)
-            }
-            .padding(20)
-            VStack(alignment: .leading , spacing: 8){
-                //questions
-                Text("* Issue with recommend Route?")
-                Text("* construction work?")
-                Text("* Road/entrance blocked?")
-                Text("* No accessible entrances?")
-                Text("* Dim lighting?")
-                Text("* Too Crowded?")
-                Text("* Other:______________")
-                Text("Please descibe your issue below")
-                TextEditor(text: $text1)
-                    .frame(height: 150)
-                    .padding(8)
-                    .overlay( RoundedRectangle(cornerRadius: 8) .stroke(Color.gray.opacity(0.2)))
-            }
-            .padding(20)
-            VStack(spacing: 4){
-                Text("attachments")
-                
-                PhotosPicker(selection: $selectedItem, maxSelectionCount: 5, matching: .any(of: [.images, .videos]))
-                {
-                    Label("add any photos/videos", systemImage: "paperclip")
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                // Header
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Report an Issue")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundStyle(Color.safeRoutePurple)
+                    Text("Help us improve SafeRoute by reporting issues you encounter.")
+                        .font(.system(size: 15))
+                        .foregroundStyle(.secondary)
                 }
-                Text("\(selectedItem.count) attachments selected")
+                .padding(.horizontal)
+                .padding(.top)
+
+                // Contact Info Card
+                formCard {
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("Your information")
+                            .font(.headline)
+                            .foregroundStyle(Color.safeRoutePurple)
+
+                        VStack(spacing: 12) {
+                            LabeledField(label: "Name", placeholder: "Full name", text: $name)
+                            LabeledField(label: "Email", placeholder: "name@example.com", text: $email, keyboardType: .emailAddress)
+                        }
+                    }
+                }
+
+                // Issue Type Card
+                formCard {
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("What happened?")
+                            .font(.headline)
+                            .foregroundStyle(Color.safeRoutePurple)
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            bullet("Issue with recommended route")
+                            bullet("Construction work")
+                            bullet("Road or entrance blocked")
+                            bullet("No accessible entrances")
+                            bullet("Dim lighting")
+                            bullet("Too crowded")
+                            bullet("Other (describe below)")
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Describe the issue")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            TextEditor(text: $descriptionText)
+                                .frame(minHeight: 140)
+                                .padding(10)
+                                .background(Color.gray.opacity(0.06))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.20), lineWidth: 1)
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                    }
+                }
+
+                // Attachments Card
+                formCard {
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("Attachments (optional)")
+                            .font(.headline)
+                            .foregroundStyle(Color.safeRoutePurple)
+
+                        PhotosPicker(selection: $selectedItems, maxSelectionCount: 5, matching: .any(of: [.images, .videos])) {
+                            Label("Add photos or videos", systemImage: "paperclip")
+                                .font(.system(size: 16, weight: .semibold))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .foregroundStyle(.white)
+                                .background(Color.safeRoutePurple)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .buttonStyle(.plain)
+
+                        Text("\(selectedItems.count) attachment(s) selected")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                // Submit Button
+                Button(action: submit) {
+                    HStack(spacing: 10) {
+                        if submitting { ProgressView().tint(.white) }
+                        Text(submitting ? "Submitting…" : "Submit Report")
+                            .font(.system(size: 17, weight: .semibold))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 54)
+                    .foregroundStyle(.white)
+                    .background((name.isEmpty || email.isEmpty || descriptionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) ? Color.gray.opacity(0.45) : Color.safeRoutePurple)
+                    .clipShape(Capsule())
+                }
+                .disabled(name.isEmpty || email.isEmpty || descriptionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || submitting)
+                .padding(.horizontal)
+                .padding(.bottom)
             }
-            Button("Submit") {
+        }
+        .background(Color.white)
+        .navigationTitle("Report Form")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func submit() {
+        submitting = true
+        // Simulate submission delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            submitting = false
+            // Reset form (or present a confirmation)
+            name = ""
+            email = ""
+            descriptionText = ""
+            selectedItems = []
+        }
+    }
+
+    // Helpers
+    @ViewBuilder private func formCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        content()
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.gray.opacity(0.06))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.gray.opacity(0.20), lineWidth: 1)
             }
-            
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .padding(20)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .padding(.horizontal)
+    }
+
+    private func bullet(_ text: String) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Text("•")
+            Text(text)
+        }
+        .font(.system(size: 15))
+        .foregroundStyle(.primary)
+    }
+}
+
+struct LabeledField: View {
+    let label: String
+    let placeholder: String
+    @Binding var text: String
+    var keyboardType: UIKeyboardType = .default
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            TextField(placeholder, text: $text)
+                .textInputAutocapitalization(.words)
+                .keyboardType(keyboardType)
+                .padding(12)
+                .background(Color.white)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.gray.opacity(0.20), lineWidth: 1)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
 }
 
 #Preview {
-    SwiftUIView()
+    NavigationStack { ReportFormView() }
 }
