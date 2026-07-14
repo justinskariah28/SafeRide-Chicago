@@ -66,21 +66,6 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                     title: "Nearby Safe Spots",
                     description: "Stay near verified community locations",
                     systemImage: "shield.checkered"
-                ),
-                TravelPreference(
-                    title: "Avoid steep hills",
-                    description: "Prioritize flatter walking routes",
-                    systemImage: "mountain.2"
-                ),
-                TravelPreference(
-                    title: "Low-sensory route",
-                    description: "Avoid crowded or noisy areas",
-                    systemImage: "speaker.slash.fill"
-                ),
-                TravelPreference(
-                    title: "Simple directions",
-                    description: "Use fewer turns and clearer instructions",
-                    systemImage: "list.bullet"
                 )
             ]
 
