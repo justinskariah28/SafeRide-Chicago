@@ -54,7 +54,7 @@ struct TravelPreferencesView: View {
                 // MARK: Continue
 
                 NavigationLink {
-                    AnalyzingRoutesView(
+                    RouteResultsView(
                         startingLocation: startingLocation,
                         destination: destination,
                         travelMode: travelMode,
