@@ -66,21 +66,6 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                     title: "Nearby Safe Spots",
                     description: "Stay near verified community locations",
                     systemImage: "shield.checkered"
-                ),
-                TravelPreference(
-                    title: "Avoid steep hills",
-                    description: "Prioritize flatter walking routes",
-                    systemImage: "mountain.2"
-                ),
-                TravelPreference(
-                    title: "Low-sensory route",
-                    description: "Avoid crowded or noisy areas",
-                    systemImage: "speaker.slash.fill"
-                ),
-                TravelPreference(
-                    title: "Simple directions",
-                    description: "Use fewer turns and clearer instructions",
-                    systemImage: "list.bullet"
                 )
             ]
 
@@ -92,16 +77,6 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                     systemImage: "arrow.up.arrow.down.square"
                 ),
                 TravelPreference(
-                    title: "Minimize transfers",
-                    description: "Use fewer buses or trains",
-                    systemImage: "arrow.triangle.swap"
-                ),
-                TravelPreference(
-                    title: "Shorter walking distance",
-                    description: "Reduce walking before and after transit",
-                    systemImage: "figure.walk"
-                ),
-                TravelPreference(
                     title: "Seated waiting areas",
                     description: "Prioritize stops with available seating",
                     systemImage: "chair.fill"
@@ -110,16 +85,6 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                     title: "Covered waiting areas",
                     description: "Prioritize stops protected from weather",
                     systemImage: "umbrella.fill"
-                ),
-                TravelPreference(
-                    title: "Avoid crowded stations",
-                    description: "Prefer less crowded transit locations",
-                    systemImage: "person.3.fill"
-                ),
-                TravelPreference(
-                    title: "Accessible boarding",
-                    description: "Prioritize accessible buses and trains",
-                    systemImage: "figure.roll"
                 )
             ]
 
@@ -131,19 +96,9 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                     systemImage: "parkingsign.circle.fill"
                 ),
                 TravelPreference(
-                    title: "Minimize walking",
-                    description: "Park closer to the destination entrance",
-                    systemImage: "figure.walk"
-                ),
-                TravelPreference(
                     title: "Well-lit arrival area",
                     description: "Prioritize safer, well-lit parking areas",
                     systemImage: "lightbulb.fill"
-                ),
-                TravelPreference(
-                    title: "Avoid difficult intersections",
-                    description: "Choose routes with simpler turns",
-                    systemImage: "arrow.triangle.turn.up.right.circle"
                 ),
                 TravelPreference(
                     title: "Avoid highways",
