@@ -45,7 +45,7 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
 
     var preferences: [TravelPreference] {
         switch self {
-        case .walking:
+        case .walking:                                                          //Travel Preferences for Walking
             return [
                 TravelPreference(
                     title: "Step-free route",
@@ -69,7 +69,7 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                 )
             ]
 
-        case .transit:
+        case .transit:                                                          //Travel Preferences for Public Transportation
             return [
                 TravelPreference(
                     title: "Elevator-accessible stations",
@@ -88,7 +88,7 @@ enum TravelMode: String, CaseIterable, Identifiable, Hashable {
                 )
             ]
 
-        case .driving:
+        case .driving:                                                          //Travel Preferences for Driving
             return [
                 TravelPreference(
                     title: "Accessible parking",

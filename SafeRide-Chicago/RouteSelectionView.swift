@@ -17,6 +17,7 @@ struct RouteSelectionView: View {
     }
 
     var body: some View {
+        
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
 
@@ -127,6 +128,7 @@ struct RouteSelectionView: View {
         }
         .background(Color.white)
         .navigationBarTitleDisplayMode(.inline)
+        .settingsToolbar()
     }
 }
 

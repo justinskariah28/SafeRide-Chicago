@@ -32,6 +32,7 @@ struct RouteResultsView: View {
         .background(Color.white)
         .navigationTitle("Route Options")
         .navigationBarTitleDisplayMode(.inline)
+        .settingsToolbar()
         .task {
             await loadRoutes()
         }
