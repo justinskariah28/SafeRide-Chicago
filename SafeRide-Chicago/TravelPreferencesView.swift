@@ -51,8 +51,13 @@ struct TravelPreferencesView: View {
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity)
 
-                // MARK: Continue
-
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 20)
+            .padding(.bottom, 40)
+        }
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 0) {
                 NavigationLink {
                     RouteResultsView(
                         startingLocation: startingLocation,
@@ -69,10 +74,11 @@ struct TravelPreferencesView: View {
                         .background(Color.safeRoutePurple)
                         .clipShape(Capsule())
                 }
+                .padding(.horizontal, 24)
+                .padding(.top, 10)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 20)
-            .padding(.bottom, 40)
+            .background(.ultraThinMaterial)
         }
         .background(Color.white)
         .navigationBarTitleDisplayMode(.inline)
