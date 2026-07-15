@@ -6,7 +6,7 @@ struct WelcomeView: View {
 
             // App title and tagline
             VStack(alignment: .leading, spacing: 16) {
-                Text("SafeRide")
+                Text("SafeRoute")
                     .font(.system(size: 48, weight: .bold))
                     .foregroundStyle(Color.safeRoutePurple)
 
