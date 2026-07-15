@@ -15,6 +15,17 @@ struct ReportFormView: View {
     @State private var descriptionText = ""
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var submitting = false
+    @State private var selectedIssues: Set<String> = []
+
+    let issues = [
+        "Issue with recommended route",
+        "Construction work",
+        "Road or entrance blocked",
+        "No accessible entrances",
+        "Dim lighting",
+        "Too crowded",
+        "Other (describe below)"
+    ]
 
     var body: some View {
         ScrollView {
@@ -64,35 +75,31 @@ struct ReportFormView: View {
                             .foregroundStyle(Color.safeRoutePurple)
 
                         VStack(alignment: .leading, spacing: 10) {
-                            bullet("Issue with recommended route")
-                            bullet("Construction work")
-                            bullet("Road or entrance blocked")
-                            bullet("No accessible entrances")
-                            bullet("Dim lighting")
-                            bullet("Too crowded")
-                            bullet("Other (describe below)")
-                        }
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Describe the issue")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-
-                            TextEditor(text: $descriptionText)
-                                .frame(minHeight: 140)
-                                .padding(10)
-                                .background(Color.gray.opacity(0.06))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(
-                                            Color.gray.opacity(0.20),
-                                            lineWidth: 1
+                            ForEach(issues, id: \.self) { issue in
+                                Button(action: {
+                                    if selectedIssues.contains(issue) {
+                                        selectedIssues.remove(issue)
+                                    } else {
+                                        selectedIssues.insert(issue)
+                                    }
+                                }) {
+                                    HStack {
+                                        Image(systemName:
+                                            selectedIssues.contains(issue)
+                                            ? "checkmark.square.fill"
+                                            : "square"
                                         )
+
+                                        Text(issue)
+
+                                        Spacer()
+                                    }
                                 }
-                                .clipShape(
-                                    RoundedRectangle(cornerRadius: 12)
-                                )
+                                .foregroundColor(.primary)
+                            }
                         }
+
+                        
                     }
                 }
 
@@ -175,7 +182,7 @@ struct ReportFormView: View {
             }
         }
         .background(Color.white)
-        .navigationTitle("Report Form")
+      //  .navigationTitle("Report Form")
         .navigationBarTitleDisplayMode(.inline)
     }
 
