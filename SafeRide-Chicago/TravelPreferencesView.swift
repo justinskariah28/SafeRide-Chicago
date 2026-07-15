@@ -76,6 +76,7 @@ struct TravelPreferencesView: View {
         }
         .background(Color.white)
         .navigationBarTitleDisplayMode(.inline)
+        .settingsToolbar()
     }
 
     private func togglePreference(_ preference: TravelPreference) {

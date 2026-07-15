@@ -1,9 +1,11 @@
+
 //
 //  ReportFormView.swift
 //  SafeRide-Chicago
 //
 //  Improved styling for report form
 //
+
 import PhotosUI
 import SwiftUI
 
@@ -22,6 +24,7 @@ struct ReportFormView: View {
                     Text("Report an Issue")
                         .font(.system(size: 32, weight: .bold))
                         .foregroundStyle(Color.safeRoutePurple)
+
                     Text("Help us improve SafeRoute by reporting issues you encounter.")
                         .font(.system(size: 15))
                         .foregroundStyle(.secondary)
@@ -37,8 +40,18 @@ struct ReportFormView: View {
                             .foregroundStyle(Color.safeRoutePurple)
 
                         VStack(spacing: 12) {
-                            LabeledField(label: "Name", placeholder: "Full name", text: $name)
-                            LabeledField(label: "Email", placeholder: "name@example.com", text: $email, keyboardType: .emailAddress)
+                            LabeledField(
+                                label: "Name",
+                                placeholder: "Full name",
+                                text: $name
+                            )
+
+                            LabeledField(
+                                label: "Email",
+                                placeholder: "name@example.com",
+                                text: $email,
+                                keyboardType: .emailAddress
+                            )
                         }
                     }
                 }
@@ -64,15 +77,21 @@ struct ReportFormView: View {
                             Text("Describe the issue")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
+
                             TextEditor(text: $descriptionText)
                                 .frame(minHeight: 140)
                                 .padding(10)
                                 .background(Color.gray.opacity(0.06))
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color.gray.opacity(0.20), lineWidth: 1)
+                                        .stroke(
+                                            Color.gray.opacity(0.20),
+                                            lineWidth: 1
+                                        )
                                 }
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 12)
+                                )
                         }
                     }
                 }
@@ -84,14 +103,23 @@ struct ReportFormView: View {
                             .font(.headline)
                             .foregroundStyle(Color.safeRoutePurple)
 
-                        PhotosPicker(selection: $selectedItems, maxSelectionCount: 5, matching: .any(of: [.images, .videos])) {
-                            Label("Add photos or videos", systemImage: "paperclip")
-                                .font(.system(size: 16, weight: .semibold))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 48)
-                                .foregroundStyle(.white)
-                                .background(Color.safeRoutePurple)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        PhotosPicker(
+                            selection: $selectedItems,
+                            maxSelectionCount: 5,
+                            matching: .any(of: [.images, .videos])
+                        ) {
+                            Label(
+                                "Add photos or videos",
+                                systemImage: "paperclip"
+                            )
+                            .font(.system(size: 16, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 48)
+                            .foregroundStyle(.white)
+                            .background(Color.safeRoutePurple)
+                            .clipShape(
+                                RoundedRectangle(cornerRadius: 12)
+                            )
                         }
                         .buttonStyle(.plain)
 
@@ -104,17 +132,44 @@ struct ReportFormView: View {
                 // Submit Button
                 Button(action: submit) {
                     HStack(spacing: 10) {
-                        if submitting { ProgressView().tint(.white) }
-                        Text(submitting ? "Submitting…" : "Submit Report")
-                            .font(.system(size: 17, weight: .semibold))
+                        if submitting {
+                            ProgressView()
+                                .tint(.white)
+                        }
+
+                        Text(
+                            submitting
+                                ? "Submitting…"
+                                : "Submit Report"
+                        )
+                        .font(.system(size: 17, weight: .semibold))
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 54)
                     .foregroundStyle(.white)
-                    .background((name.isEmpty || email.isEmpty || descriptionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) ? Color.gray.opacity(0.45) : Color.safeRoutePurple)
+                    .background(
+                        name.isEmpty ||
+                        email.isEmpty ||
+                        descriptionText
+                            .trimmingCharacters(
+                                in: .whitespacesAndNewlines
+                            )
+                            .isEmpty
+                            ? Color.gray.opacity(0.45)
+                            : Color.safeRoutePurple
+                    )
                     .clipShape(Capsule())
                 }
-                .disabled(name.isEmpty || email.isEmpty || descriptionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || submitting)
+                .disabled(
+                    name.isEmpty ||
+                    email.isEmpty ||
+                    descriptionText
+                        .trimmingCharacters(
+                            in: .whitespacesAndNewlines
+                        )
+                        .isEmpty ||
+                    submitting
+                )
                 .padding(.horizontal)
                 .padding(.bottom)
             }
@@ -126,10 +181,12 @@ struct ReportFormView: View {
 
     private func submit() {
         submitting = true
+
         // Simulate submission delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
             submitting = false
-            // Reset form (or present a confirmation)
+
+            // Reset form
             name = ""
             email = ""
             descriptionText = ""
@@ -138,14 +195,20 @@ struct ReportFormView: View {
     }
 
     // Helpers
-    @ViewBuilder private func formCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+    @ViewBuilder
+    private func formCard<Content: View>(
+        @ViewBuilder content: () -> Content
+    ) -> some View {
         content()
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.gray.opacity(0.06))
             .overlay {
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.gray.opacity(0.20), lineWidth: 1)
+                    .stroke(
+                        Color.gray.opacity(0.20),
+                        lineWidth: 1
+                    )
             }
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .padding(.horizontal)
@@ -164,7 +227,9 @@ struct ReportFormView: View {
 struct LabeledField: View {
     let label: String
     let placeholder: String
+
     @Binding var text: String
+
     var keyboardType: UIKeyboardType = .default
 
     var body: some View {
@@ -172,6 +237,7 @@ struct LabeledField: View {
             Text(label)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+
             TextField(placeholder, text: $text)
                 .textInputAutocapitalization(.words)
                 .keyboardType(keyboardType)
@@ -179,7 +245,10 @@ struct LabeledField: View {
                 .background(Color.white)
                 .overlay {
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.gray.opacity(0.20), lineWidth: 1)
+                        .stroke(
+                            Color.gray.opacity(0.20),
+                            lineWidth: 1
+                        )
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 12))
         }
@@ -187,5 +256,8 @@ struct LabeledField: View {
 }
 
 #Preview {
-    NavigationStack { ReportFormView() }
+    NavigationStack {
+        ReportFormView()
+    }
 }
+
