@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		CEB80123300698BE00C837A2 /* SafeRide-Chicago.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "SafeRide-Chicago.app"; path = "/Users/6bgccloanlibrary/Desktop/SafeRide-Chicago/build/Debug-iphoneos/SafeRide-Chicago.app"; sourceTree = "<absolute>"; };
+		CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SafeRide-Chicago.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				CE8D822C2FFD4E51004907D0 /* SafeRide-Chicago */,
+				CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +59,7 @@
 			packageProductDependencies = (
 			);
 			productName = "SafeRide-Chicago";
-			productReference = CEB80123300698BE00C837A2 /* SafeRide-Chicago.app */;
+			productReference = CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

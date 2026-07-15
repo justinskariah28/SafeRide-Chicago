@@ -128,15 +128,28 @@ struct RouteResultsView: View {
                     .padding(.bottom, 16)
                 }
 
-                Button {
-                    // Later this goes to active navigation.
-                } label: {
-                    Text("Start \(selectedOption?.title ?? "Route")")
+                if let selectedOption {
+                    NavigationLink {
+                        ActiveNavigationView(
+                            route: selectedOption.route,
+                            destinationName: destination
+                        )
+                    } label: {
+                        Text("Start \(selectedOption.title) Route")
+                            .font(.system(size: 17, weight: .semibold))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .foregroundStyle(.white)
+                            .background(Color.safeRoutePurple)
+                            .clipShape(Capsule())
+                    }
+                } else {
+                    Text("Select a Route")
                         .font(.system(size: 17, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .frame(height: 56)
                         .foregroundStyle(.white)
-                        .background(Color.safeRoutePurple)
+                        .background(Color.gray.opacity(0.45))
                         .clipShape(Capsule())
                 }
             }
