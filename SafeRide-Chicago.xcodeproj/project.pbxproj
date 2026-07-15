@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		CE8D822A2FFD4E51004907D0 /* SafeRide-Chicago.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SafeRide-Chicago.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SafeRide-Chicago.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,8 @@
 			isa = PBXGroup;
 			children = (
 				CE8D822C2FFD4E51004907D0 /* SafeRide-Chicago */,
-				CE8D822B2FFD4E51004907D0 /* Products */,
+				CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */,
 			);
-			sourceTree = "<group>";
-		};
-		CE8D822B2FFD4E51004907D0 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CE8D822A2FFD4E51004907D0 /* SafeRide-Chicago.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -67,7 +59,7 @@
 			packageProductDependencies = (
 			);
 			productName = "SafeRide-Chicago";
-			productReference = CE8D822A2FFD4E51004907D0 /* SafeRide-Chicago.app */;
+			productReference = CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -95,7 +87,7 @@
 			mainGroup = CE8D82212FFD4E51004907D0;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = CE8D822B2FFD4E51004907D0 /* Products */;
+			productRefGroup = CE8D82212FFD4E51004907D0;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
