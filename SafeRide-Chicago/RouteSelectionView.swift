@@ -1,53 +1,62 @@
+
+//
+//  RouteSelectionView.swift
+//  SafeRide-Chicago
+//
+
 import SwiftUI
-import MapKit
+
+// MARK: - Route Selection Screen
 
 struct RouteSelectionView: View {
-    @State private var startingLocation = "Current Location"
-    @State private var destination = ""
+    @State private var selectedStartingLocation: DemoLocation? = .loomis
+    @State private var selectedDestination: DemoLocation?
     @State private var selectedMode: TravelMode = .walking
-    @State private var resolvedDestination: MKMapItem?
-    @State private var isSearching = false
-    @State private var shouldShowPreferences = false
-    @State private var errorMessage = ""
-    @State private var showingError = false
 
     private var canContinue: Bool {
-        !startingLocation.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !destination.trimmingCharacters(in: .whitespaces).isEmpty
+        guard let start = selectedStartingLocation,
+              let destination = selectedDestination else {
+            return false
+        }
+
+        return start != destination
     }
 
     var body: some View {
-        
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
 
-                // MARK: Title
+                // MARK: Heading
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Where are you going?")
                         .font(.system(size: 36, weight: .bold))
                         .foregroundStyle(Color.safeRoutePurple)
 
-                    Text("Enter your trip and choose how you plan to travel.")
-                        .font(.system(size: 17))
-                        .foregroundStyle(.secondary)
+                    Text(
+                        "Choose your starting point, destination, and travel method."
+                    )
+                    .font(.system(size: 17))
+                    .foregroundStyle(.secondary)
                 }
 
-                // MARK: Location Fields
+                // MARK: Location Dropdowns
 
                 VStack(spacing: 14) {
-                    LocationTextField(
+                    LocationDropDown(
                         label: "From",
-                        placeholder: "Starting location",
+                        placeholder: "Choose starting location",
                         systemImage: "location.fill",
-                        text: $startingLocation
+                        options: DemoLocation.startingOptions,
+                        selection: $selectedStartingLocation
                     )
 
-                    LocationTextField(
+                    LocationDropDown(
                         label: "To",
-                        placeholder: "Enter destination",
+                        placeholder: "Choose destination",
                         systemImage: "mappin.circle.fill",
-                        text: $destination
+                        options: DemoLocation.destinationOptions,
+                        selection: $selectedDestination
                     )
                 }
 
@@ -55,7 +64,7 @@ struct RouteSelectionView: View {
 
                 VStack(alignment: .leading, spacing: 14) {
                     Text("How are you traveling?")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(Color.safeRoutePurple)
 
                     HStack(spacing: 10) {
@@ -76,35 +85,98 @@ struct RouteSelectionView: View {
                     Image(systemName: selectedMode.systemImage)
                         .font(.system(size: 24))
                         .foregroundStyle(Color.safeRoutePurple)
-                        .frame(width: 42, height: 42)
+                        .frame(width: 44, height: 44)
+                        .background(
+                            Color.safeRoutePurple.opacity(0.10)
+                        )
+                        .clipShape(Circle())
 
-                    VStack(alignment: .leading, spacing: 3) {
+                    VStack(alignment: .leading, spacing: 4) {
                         Text("\(selectedMode.rawValue) selected")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(
+                                .system(
+                                    size: 17,
+                                    weight: .semibold
+                                )
+                            )
 
-                        Text("Your accessibility preferences will be customized for this travel mode.")
-                            .font(.system(size: 14))
-                            .foregroundStyle(.secondary)
+                        Text(
+                            "Your accessibility preferences will be customized for this travel mode."
+                        )
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.leading)
                     }
+
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity)
-                .padding(16)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color.gray.opacity(0.06))
-                .clipShape(RoundedRectangle(cornerRadius: 18))
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 18)
+                )
 
-                Spacer(minLength: 20)
+                // MARK: Trip Preview
 
-                // MARK: Continue Button
+                if let start = selectedStartingLocation,
+                   let destination = selectedDestination {
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Your trip")
+                            .font(
+                                .system(
+                                    size: 16,
+                                    weight: .semibold
+                                )
+                            )
+                            .foregroundStyle(Color.safeRoutePurple)
+
+                        Label(
+                            start.name,
+                            systemImage: "location.fill"
+                        )
+
+                        Label(
+                            destination.name,
+                            systemImage: "mappin.circle.fill"
+                        )
+                    }
+                    .font(.system(size: 15))
+                    .padding(16)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .leading
+                    )
+                    .background(
+                        Color.safeRoutePurple.opacity(0.08)
+                    )
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 16)
+                    )
+                }
+
+                // MARK: Continue
 
                 NavigationLink {
-                    TravelPreferencesView(
-                        startingLocation: startingLocation,
-                        destination: destination,
-                        travelMode: selectedMode
-                    )
+                    if let start = selectedStartingLocation,
+                       let destination = selectedDestination {
+
+                        TravelPreferencesView(
+                            startingLocation: start.address,
+                            destination: destination.address,
+                            travelMode: selectedMode
+                        )
+                    }
                 } label: {
                     Text("Choose Travel Preferences")
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(
+                            .system(
+                                size: 17,
+                                weight: .semibold
+                            )
+                        )
                         .frame(maxWidth: .infinity)
                         .frame(height: 56)
                         .foregroundStyle(.white)
@@ -118,8 +190,8 @@ struct RouteSelectionView: View {
                 .disabled(!canContinue)
                 .accessibilityHint(
                     canContinue
-                        ? "Opens accessibility preferences"
-                        : "Enter a destination before continuing"
+                        ? "Opens travel accessibility preferences"
+                        : "Choose a destination before continuing"
                 )
             }
             .padding(.horizontal, 24)
@@ -128,57 +200,24 @@ struct RouteSelectionView: View {
         }
         .background(Color.white)
         .navigationBarTitleDisplayMode(.inline)
-        .settingsToolbar()
-    }
-}
 
-// MARK: - Location Text Field
+        // MARK: Settings Gear
 
-struct LocationTextField: View {
-    let label: String
-    let placeholder: String
-    let systemImage: String
-
-    @Binding var text: String
-
-    var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: systemImage)
-                .font(.system(size: 20))
-                .foregroundStyle(Color.safeRoutePurple)
-                .frame(width: 28)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(label)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.secondary)
-
-                TextField(placeholder, text: $text)
-                    .font(.system(size: 17))
-                    .textInputAutocapitalization(.words)
-                    .autocorrectionDisabled()
-            }
-
-            if !text.isEmpty {
-                Button {
-                    text = ""
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink {
+                    SettingsView()
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                    Image(systemName: "gearshape.fill")
+                        .foregroundStyle(Color.safeRoutePurple)
                 }
-                .accessibilityLabel("Clear \(label) location")
+                .accessibilityLabel("Settings")
             }
         }
-        .padding(.horizontal, 16)
-        .frame(height: 70)
-        .background(Color.safeRoutePurple.opacity(0.08))
-        .overlay {
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.safeRoutePurple.opacity(0.18), lineWidth: 1)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
+
+
 
 // MARK: - Travel Mode Button
 
@@ -191,13 +230,18 @@ struct TravelModeButton: View {
         Button(action: action) {
             VStack(spacing: 8) {
                 Image(systemName: mode.systemImage)
-                    .font(.system(size: 22))
+                    .font(.system(size: 25))
 
                 Text(mode.rawValue)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(
+                        .system(
+                            size: 15,
+                            weight: .semibold
+                        )
+                    )
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 82)
+            .frame(height: 94)
             .foregroundStyle(
                 isSelected
                     ? Color.white
@@ -206,22 +250,26 @@ struct TravelModeButton: View {
             .background(
                 isSelected
                     ? Color.safeRoutePurple
-                    : Color.safeRoutePurple.opacity(0.08)
+                    : Color.gray.opacity(0.08)
             )
             .overlay {
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 18)
                     .stroke(
-                        Color.safeRoutePurple.opacity(
-                            isSelected ? 0 : 0.20
-                        ),
+                        isSelected
+                            ? Color.clear
+                            : Color.gray.opacity(0.20),
                         lineWidth: 1
                     )
             }
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .clipShape(
+                RoundedRectangle(cornerRadius: 18)
+            )
         }
         .buttonStyle(.plain)
         .accessibilityLabel(mode.rawValue)
-        .accessibilityValue(isSelected ? "Selected" : "Not selected")
+        .accessibilityValue(
+            isSelected ? "Selected" : "Not selected"
+        )
         .accessibilityAddTraits(
             isSelected ? .isSelected : []
         )
@@ -233,3 +281,4 @@ struct TravelModeButton: View {
         RouteSelectionView()
     }
 }
+
