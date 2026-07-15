@@ -1,6 +1,11 @@
+//
+//  LocationManager.swift
+//  SafeRide-Chicago
+//
+
+import Combine
 import CoreLocation
 import Foundation
-import Combine
 
 final class LocationManager:
     NSObject,
@@ -8,8 +13,7 @@ final class LocationManager:
     CLLocationManagerDelegate
 {
     @Published private(set) var currentLocation: CLLocation?
-    @Published private(set) var authorizationStatus:
-        CLAuthorizationStatus
+    @Published private(set) var authorizationStatus: CLAuthorizationStatus
     @Published private(set) var locationError: String?
 
     private let manager = CLLocationManager()
@@ -22,6 +26,7 @@ final class LocationManager:
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.distanceFilter = 5
+        manager.activityType = .fitness
     }
 
     func requestCurrentLocation() {
@@ -49,16 +54,26 @@ final class LocationManager:
     }
 
     func startNavigationUpdates() {
-        switch manager.authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            manager.startUpdatingLocation()
+        locationError = nil
 
+        switch manager.authorizationStatus {
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
 
-        default:
+        case .authorizedWhenInUse, .authorizedAlways:
+            manager.startUpdatingLocation()
+
+        case .denied:
             locationError =
-                "SafeRide needs location access for navigation."
+                "Location access is disabled. Enable it in Settings."
+
+        case .restricted:
+            locationError =
+                "Location access is restricted on this device."
+
+        @unknown default:
+            locationError =
+                "SafeRide could not determine your location permission."
         }
     }
 
@@ -74,7 +89,7 @@ final class LocationManager:
 
             switch manager.authorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
-                manager.requestLocation()
+                manager.startUpdatingLocation()
 
             case .denied:
                 self.locationError =
@@ -84,8 +99,12 @@ final class LocationManager:
                 self.locationError =
                     "Location access is restricted."
 
-            default:
+            case .notDetermined:
                 break
+
+            @unknown default:
+                self.locationError =
+                    "SafeRide could not determine your location permission."
             }
         }
     }
@@ -95,6 +114,12 @@ final class LocationManager:
         didUpdateLocations locations: [CLLocation]
     ) {
         guard let newestLocation = locations.last else {
+            return
+        }
+
+        // Ignore inaccurate GPS readings.
+        guard newestLocation.horizontalAccuracy >= 0,
+              newestLocation.horizontalAccuracy <= 100 else {
             return
         }
 
