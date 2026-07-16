@@ -76,6 +76,7 @@ struct ActiveNavigationView: View {
             .ignoresSafeArea(edges: .bottom)
 
             navigationCard
+                .ignoresSafeArea(edges: .bottom)
         }
         .navigationTitle("Navigation")
         .navigationBarTitleDisplayMode(.inline)
