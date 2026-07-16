@@ -1,3 +1,8 @@
+//
+//  SafeSpot.swift
+//  SafeRide-Chicago
+//
+
 import Foundation
 import MapKit
 
@@ -57,8 +62,8 @@ extension SafeSpot {
         SafeSpot(
             name: "Richard J. Daley Library",
             address: "801 S Morgan St, Chicago, IL",
-            latitude: 41.8698,
-            longitude: -87.6510,
+            latitude: 41.871897,
+            longitude: -87.650271,
             isWheelchairAccessible: true,
             isWellLit: true,
             seating: .insideAndOutside,
@@ -68,8 +73,8 @@ extension SafeSpot {
         SafeSpot(
             name: "Academic and Residential Complex",
             address: "940 W Harrison St, Chicago, IL",
-            latitude: 41.86948,
-            longitude: -87.65036,
+            latitude: 41.874780,
+            longitude: -87.650880,
             isWheelchairAccessible: true,
             isWellLit: true,
             seating: .insideAndOutside,
@@ -79,8 +84,8 @@ extension SafeSpot {
         SafeSpot(
             name: "UIC Student Recreation Facility",
             address: "737 S Halsted St, Chicago, IL",
-            latitude: 41.8753,
-            longitude: -87.6481,
+            latitude: 41.872454,
+            longitude: -87.646303,
             isWheelchairAccessible: true,
             isWellLit: true,
             seating: .inside,
