@@ -10,20 +10,22 @@ struct WelcomeView: View {
                     .font(.system(size: 48, weight: .bold))
                     .foregroundStyle(Color.safeRoutePurple)
 
-                Text("An Accessable \nWay To Travel")
+                Text("An Accessible\nWay To Travel")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundStyle(.black)
             }
 
             Spacer()
 
-            // Navigation symbol
+            // SafeRoute logo
             HStack {
                 Spacer()
 
-                Image(systemName: "location.north.line")
-                    .font(.system(size: 58, weight: .regular))
-                    .foregroundStyle(.black)
+                Image("Logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 150, height: 150)
+                    .accessibilityLabel("SafeRoute logo")
 
                 Spacer()
             }
@@ -35,25 +37,31 @@ struct WelcomeView: View {
                 NavigationLink {
                     RouteSelectionView()
                 } label: {
-                    Label("Get Started", systemImage: "arrow.right")
-                        .font(.system(size: 17, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .foregroundStyle(.white)
-                        .background(Color.safeRoutePurple)
-                        .clipShape(Capsule())
+                    Label(
+                        "Get Started",
+                        systemImage: "arrow.right"
+                    )
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .foregroundStyle(.white)
+                    .background(Color.safeRoutePurple)
+                    .clipShape(Capsule())
                 }
 
                 NavigationLink {
                     RouteSelectionView()
                 } label: {
-                    Label("Continue as Guest", systemImage: "person")
-                        .font(.system(size: 17, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .foregroundStyle(.white)
-                        .background(Color.safeRouteLightPurple)
-                        .clipShape(Capsule())
+                    Label(
+                        "Continue as Guest",
+                        systemImage: "person"
+                    )
+                    .font(.system(size: 17, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .foregroundStyle(.white)
+                    .background(Color.safeRouteLightPurple)
+                    .clipShape(Capsule())
                 }
             }
         }
@@ -79,5 +87,7 @@ extension Color {
 }
 
 #Preview {
-    WelcomeView()
+    NavigationStack {
+        WelcomeView()
+    }
 }
