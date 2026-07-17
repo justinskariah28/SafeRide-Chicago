@@ -166,6 +166,7 @@ extension StreetSegment {
             lightingScore: 5.0,
             isWheelchairAccessible: true,
             sidewalkCondition: .good,
+            crowding: .high,
             notes: """
             Very well lit at night and suitable for wheelchair users.
             """
@@ -182,6 +183,7 @@ extension StreetSegment {
             lightingScore: 3.5,
             isWheelchairAccessible: true,
             sidewalkCondition: .good,
+            crowding: .moderate,
             notes: """
             Moderate nighttime lighting and sidewalk in good condition.
             """
@@ -283,7 +285,31 @@ extension StreetSegment {
             Wheelchair accessible with good sidewalks, but nighttime
             lighting is below average.
             """
+        ),
+        
+        StreetSegment(
+            name: "Roosevelt Road",
+            startIntersection: "S Loomis St & W Roosevelt Rd",
+            endIntersection: "Eastern survey point on W Roosevelt Rd",
+            startLatitude: 41.867007,
+            startLongitude: -87.661664,
+            endLatitude: 41.867260,
+            endLongitude: -87.645293,
+            lightingScore: 4.0,
+            isWheelchairAccessible: true,
+            sidewalkCondition: .good,
+            hasCurbRamps: nil,
+            obstacles: [],
+            crossingDifficulty: .easy,
+            crowding: .moderate,
+            nearbySafeSpotNames: [
+                "James Stukel Towers",
+                "Science & Engineering South"
+            ],
+            notes: """
+            Wheelchair accessible with good sidewalks and strong lighting.
+            Moderate crowding was observed, with no major obstacles reported.
+            """
         )
     ]
 }
-

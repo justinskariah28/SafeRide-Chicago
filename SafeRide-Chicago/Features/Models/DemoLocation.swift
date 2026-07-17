@@ -1,12 +1,17 @@
 import Foundation
 
 enum DemoLocation: String, Identifiable, Hashable {
-    case currentLocation
     case loomis
     case gathersTeaBar
     case daleyLibrary
     case academicResidentialComplex
     case studentRecreationFacility
+    case behavioralSciencesBuilding
+    case studentCenterEast
+    case scienceEngineeringSouth
+    case jamesStukelTowers
+    case creditUnionOneArena
+    case studentResidenceCommonsCourtyard
 
     var id: String {
         rawValue
@@ -14,9 +19,7 @@ enum DemoLocation: String, Identifiable, Hashable {
 
     var name: String {
         switch self {
-        case .currentLocation:
-            return "Current Location"
-
+        
         case .loomis:
             return "816 S Loomis St"
 
@@ -31,13 +34,29 @@ enum DemoLocation: String, Identifiable, Hashable {
 
         case .studentRecreationFacility:
             return "UIC Student Recreation Facility"
+            
+        case .behavioralSciencesBuilding:
+            return "Behavioral Sciences Building"
+        
+        case .studentCenterEast:
+            return "Student Center East"
+        
+        case .jamesStukelTowers:
+            return "James Stukel Towers"
+        
+        case .creditUnionOneArena:
+            return "Credit Union 1 Arena"
+        
+        case .studentResidenceCommonsCourtyard:
+            return "Student Residence Commons Courtyard"
+        
+        case .scienceEngineeringSouth:
+            return "Science and Engineering South"
         }
     }
 
     var address: String {
         switch self {
-        case .currentLocation:
-            return "Current Location"
 
         case .loomis:
             return "816 S Loomis St, Chicago, IL"
@@ -53,13 +72,32 @@ enum DemoLocation: String, Identifiable, Hashable {
 
         case .studentRecreationFacility:
             return "737 S Halsted St, Chicago, IL"
+            
+        case .behavioralSciencesBuilding:
+            return "1007 W Harrison St, Chicago IL"
+            
+        case .studentCenterEast:
+            return "Student Center East, 750 S Halsted St"
+
+        case .scienceEngineeringSouth:
+            return "Science and Engineering South, 845 W Taylor St"
+
+        case .jamesStukelTowers:
+            return "James J. Stukel Towers, 718 W James M. Rochford St"
+
+        case .creditUnionOneArena:
+            return "Credit Union 1 Arena, 525 S Racine Ave"
+
+        case .studentResidenceCommonsCourtyard:
+            return "Courtyard, Student Residence and Commons, 700 S Halsted St"
         }
+        
+        
+        
     }
 
     var systemImage: String {
         switch self {
-        case .currentLocation:
-            return "location.fill"
 
         case .loomis:
             return "house.fill"
@@ -75,16 +113,40 @@ enum DemoLocation: String, Identifiable, Hashable {
 
         case .studentRecreationFacility:
             return "figure.run"
+            
+        case .behavioralSciencesBuilding:
+            return "brain.head.profile"
+            
+        case .studentCenterEast:
+            return "fork.knife"
+
+        case .scienceEngineeringSouth:
+            return "atom"
+
+        case .jamesStukelTowers:
+            return "building.fill"
+
+        case .creditUnionOneArena:
+            return "sportscourt.fill"
+
+        case .studentResidenceCommonsCourtyard:
+            return "house.fill"
         }
     }
 
     static let startingOptions: [DemoLocation] = [
-        .currentLocation,
         .loomis,
         .gathersTeaBar,
         .daleyLibrary,
         .academicResidentialComplex,
-        .studentRecreationFacility
+        .studentRecreationFacility,
+        .behavioralSciencesBuilding,
+        .studentCenterEast,
+        .scienceEngineeringSouth,
+        .jamesStukelTowers,
+        .creditUnionOneArena,
+        .studentResidenceCommonsCourtyard
+        
     ]
 
     static let destinationOptions: [DemoLocation] = [
@@ -92,6 +154,13 @@ enum DemoLocation: String, Identifiable, Hashable {
         .daleyLibrary,
         .academicResidentialComplex,
         .studentRecreationFacility,
-        .loomis
+        .loomis,
+        .behavioralSciencesBuilding,
+        .studentCenterEast,
+        .scienceEngineeringSouth,
+        .jamesStukelTowers,
+        .creditUnionOneArena,
+        .studentResidenceCommonsCourtyard
+        
     ]
 }

@@ -41,6 +41,7 @@ struct AccessibleArea: Identifiable, Codable, Hashable {
 
     let isWheelchairAccessible: Bool
     let pathCondition: SidewalkCondition
+    let crowding: CrowdingLevel
     let obstacles: [RouteObstacle]
 
     let notes: String
@@ -54,6 +55,7 @@ struct AccessibleArea: Identifiable, Codable, Hashable {
         lightingScore: Double,
         isWheelchairAccessible: Bool,
         pathCondition: SidewalkCondition,
+        crowding: CrowdingLevel = .unknown,
         obstacles: [RouteObstacle] = [],
         notes: String = ""
     ) {
@@ -65,6 +67,7 @@ struct AccessibleArea: Identifiable, Codable, Hashable {
         self.lightingScore = lightingScore
         self.isWheelchairAccessible = isWheelchairAccessible
         self.pathCondition = pathCondition
+        self.crowding = crowding
         self.obstacles = obstacles
         self.notes = notes
     }
@@ -195,6 +198,7 @@ extension AccessibleArea {
         lightingScore: 1.0,
         isWheelchairAccessible: true,
         pathCondition: .good,
+        crowding: .low,
         obstacles: [],
 
         notes: """
