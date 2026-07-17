@@ -22,7 +22,7 @@ struct ReportSubmittedView: View {
             Text("Thank You!")
                 .font(.system(size: 34, weight: .bold))
                 .foregroundStyle(Color.safeRoutePurple)
-            Text("Thank you for your feedback.")
+            Text("Thank you for your report.")
                 .font(.system(size: 18))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
