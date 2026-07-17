@@ -21,7 +21,7 @@ struct WelcomeView: View {
             HStack {
                 Spacer()
 
-                Image("Logo 3")
+                Image("Logo")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 150, height: 150)

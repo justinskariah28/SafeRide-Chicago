@@ -2,8 +2,6 @@
 //  RouteMapView.swift
 //  SafeRide-Chicago
 //
-//  Created by 6 BGCC Loan Library on 7/8/26.
-//
 
 import SwiftUI
 import MapKit
@@ -27,26 +25,11 @@ struct RouteMapView: UIViewRepresentable {
         _ mapView: MKMapView,
         context: Context
     ) {
-        /*
-         Store the newly selected polyline BEFORE adding overlays.
-
-         MKMapView asks the coordinator for a renderer as soon as an
-         overlay is added. In the old version, selectedPolyline was
-         updated after the overlays were added, so the coordinator
-         still treated the previously selected route as selected.
-         */
         context.coordinator.selectedPolyline =
             selectedRoute?.polyline
 
         mapView.removeOverlays(mapView.overlays)
 
-        /*
-         Add each unselected route once.
-
-         Recommended, Fastest, and Simplest can sometimes reference
-         the same MKRoute. This prevents the same polyline from being
-         drawn several times.
-         */
         var addedPolylines = Set<ObjectIdentifier>()
 
         for route in allRoutes {
@@ -58,8 +41,7 @@ struct RouteMapView: UIViewRepresentable {
                 continue
             }
 
-            let identifier =
-                ObjectIdentifier(polyline)
+            let identifier = ObjectIdentifier(polyline)
 
             if addedPolylines.insert(identifier).inserted {
                 mapView.addOverlay(
@@ -69,10 +51,6 @@ struct RouteMapView: UIViewRepresentable {
             }
         }
 
-        /*
-         Add the selected route last so its purple line is always
-         rendered above the gray alternate routes.
-         */
         if let selectedRoute {
             mapView.addOverlay(
                 selectedRoute.polyline,
@@ -119,22 +97,18 @@ struct RouteMapView: UIViewRepresentable {
             }
 
             let renderer =
-                MKPolylineRenderer(
-                    polyline: polyline
-                )
+                MKPolylineRenderer(polyline: polyline)
 
             if polyline === selectedPolyline {
                 renderer.strokeColor = UIColor(
                     red: 71 / 255,
                     green: 56 / 255,
                     blue: 76 / 255,
-                    alpha: 1.0
+                    alpha: 1
                 )
                 renderer.lineWidth = 7
             } else {
-                renderer.strokeColor =
-                    UIColor.systemGray3
-
+                renderer.strokeColor = .systemGray3
                 renderer.lineWidth = 4
             }
 
