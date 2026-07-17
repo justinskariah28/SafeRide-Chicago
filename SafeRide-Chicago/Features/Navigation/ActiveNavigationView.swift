@@ -17,17 +17,21 @@ struct ActiveNavigationView: View {
     @State private var currentStepIndex = 0
     @State private var hasArrived = false
     @State private var showingLocationError = false
+    @State private var showsSafeSpots = true
 
     private var navigationSteps: [MKRoute.Step] {
         route.steps.filter {
             !$0.instructions
-                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                )
                 .isEmpty
         }
     }
 
     private var currentStep: MKRoute.Step? {
-        guard navigationSteps.indices.contains(currentStepIndex) else {
+        guard navigationSteps.indices
+            .contains(currentStepIndex) else {
             return nil
         }
 
@@ -39,18 +43,20 @@ struct ActiveNavigationView: View {
             return "You have arrived at \(destinationName)"
         }
 
-        return currentStep?.instructions ?? "Continue toward your destination"
+        return currentStep?.instructions ??
+            "Continue toward your destination"
     }
 
     private var remainingDistance: CLLocationDistance {
         guard !navigationSteps.isEmpty,
-              navigationSteps.indices.contains(currentStepIndex) else {
+              navigationSteps.indices
+                .contains(currentStepIndex) else {
             return route.distance
         }
 
         return navigationSteps[currentStepIndex...]
-            .reduce(0) { partialResult, step in
-                partialResult + step.distance
+            .reduce(0) { result, step in
+                result + step.distance
             }
     }
 
@@ -67,45 +73,95 @@ struct ActiveNavigationView: View {
             Double(navigationSteps.count)
     }
 
+    private var displayedSafeSpots: [SafeSpot] {
+        showsSafeSpots
+            ? SafeSpot.demoSafeSpots
+            : []
+    }
+
+
+    private var canMoveToPreviousStep: Bool {
+        hasArrived || currentStepIndex > 0
+    }
+
     var body: some View {
         ZStack(alignment: .bottom) {
             ActiveRouteMapView(
                 route: route,
-                safeSpots: SafeSpot.demoSafeSpots
+                safeSpots: displayedSafeSpots
             )
             .ignoresSafeArea(edges: .bottom)
 
             navigationCard
         }
-        /*
-         The ZStack itself must extend to the physical bottom of the
-         screen. This moves the navigation card below the bottom safe
-         area instead of leaving an empty strip beneath it.
-         */
         .ignoresSafeArea(edges: .bottom)
         .navigationTitle("Navigation")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink {
-                    SettingsView()
-                } label: {
-                    Image(systemName: "gearshape.fill")
-                        .foregroundStyle(Color.safeRoutePurple)
-                }
-                .accessibilityLabel("Settings")
-            }
+            ToolbarItem(
+                placement: .navigationBarTrailing
+            ) {
+                HStack(spacing: 14) {
+                    Button {
+                        showsSafeSpots.toggle()
+                    } label: {
+                        Image(
+                            systemName: showsSafeSpots
+                                ? "shield.fill"
+                                : "shield.slash"
+                        )
+                        .foregroundStyle(
+                            showsSafeSpots
+                                ? Color.safeRoutePurple
+                                : Color.secondary
+                        )
+                    }
+                    .accessibilityLabel(
+                        showsSafeSpots
+                            ? "Hide Safe Spots"
+                            : "Show Safe Spots"
+                    )
 
-            #if DEBUG
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    advanceToNextStep()
-                } label: {
-                    Image(systemName: "forward.fill")
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .foregroundStyle(
+                                Color.safeRoutePurple
+                            )
+                    }
+                    .accessibilityLabel("Settings")
+
+                    #if DEBUG
+                    Button {
+                        moveToPreviousStep()
+                    } label: {
+                        Image(systemName: "backward.fill")
+                    }
+                    .disabled(!canMoveToPreviousStep)
+                    .foregroundStyle(
+                        canMoveToPreviousStep
+                            ? Color.safeRoutePurple
+                            : Color.secondary
+                    )
+                    .accessibilityLabel(
+                        "Demonstrate previous direction"
+                    )
+
+                    Button {
+                        advanceToNextStep()
+                    } label: {
+                        Image(systemName: "forward.fill")
+                    }
+                    .foregroundStyle(
+                        Color.safeRoutePurple
+                    )
+                    .accessibilityLabel(
+                        "Demonstrate next direction"
+                    )
+                    #endif
                 }
-                .accessibilityLabel("Demonstrate next direction")
             }
-            #endif
         }
         .onAppear {
             locationManager.startNavigationUpdates()
@@ -114,11 +170,14 @@ struct ActiveNavigationView: View {
             locationManager.stopNavigationUpdates()
         }
         .onReceive(
-            locationManager.$currentLocation.compactMap { $0 }
+            locationManager.$currentLocation
+                .compactMap { $0 }
         ) { location in
             updateNavigation(using: location)
         }
-        .onChange(of: locationManager.locationError) { error in
+        .onChange(
+            of: locationManager.locationError
+        ) { error in
             if error != nil {
                 showingLocationError = true
             }
@@ -155,8 +214,15 @@ struct ActiveNavigationView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(currentInstruction)
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundStyle(Color.safeRoutePurple)
+                        .font(
+                            .system(
+                                size: 22,
+                                weight: .bold
+                            )
+                        )
+                        .foregroundStyle(
+                            Color.safeRoutePurple
+                        )
 
                     if !hasArrived {
                         Text(distanceToCurrentStepText)
@@ -172,7 +238,9 @@ struct ActiveNavigationView: View {
             HStack {
                 navigationDetail(
                     title: "Remaining",
-                    value: distanceText(remainingDistance),
+                    value: distanceText(
+                        remainingDistance
+                    ),
                     systemImage: "figure.walk"
                 )
 
@@ -180,7 +248,9 @@ struct ActiveNavigationView: View {
 
                 navigationDetail(
                     title: "Estimated",
-                    value: travelTimeText(route.expectedTravelTime),
+                    value: travelTimeText(
+                        route.expectedTravelTime
+                    ),
                     systemImage: "clock"
                 )
 
@@ -198,11 +268,18 @@ struct ActiveNavigationView: View {
                     TripFeedback()
                 } label: {
                     Text("Finish Trip")
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(
+                            .system(
+                                size: 17,
+                                weight: .semibold
+                            )
+                        )
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
                         .foregroundStyle(.white)
-                        .background(Color.safeRoutePurple)
+                        .background(
+                            Color.safeRoutePurple
+                        )
                         .clipShape(Capsule())
                 }
             } else {
@@ -212,14 +289,23 @@ struct ActiveNavigationView: View {
                     } label: {
                         Label(
                             "Report",
-                            systemImage: "exclamationmark.bubble"
+                            systemImage:
+                                "exclamationmark.bubble"
                         )
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(
+                            .system(
+                                size: 16,
+                                weight: .semibold
+                            )
+                        )
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
-                        .foregroundStyle(Color.safeRoutePurple)
+                        .foregroundStyle(
+                            Color.safeRoutePurple
+                        )
                         .background(
-                            Color.safeRoutePurple.opacity(0.10)
+                            Color.safeRoutePurple
+                                .opacity(0.10)
                         )
                         .clipShape(Capsule())
                     }
@@ -228,11 +314,18 @@ struct ActiveNavigationView: View {
                         TripFeedback()
                     } label: {
                         Text("End Trip")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(
+                                .system(
+                                    size: 16,
+                                    weight: .semibold
+                                )
+                            )
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
                             .foregroundStyle(.white)
-                            .background(Color.safeRoutePurple)
+                            .background(
+                                Color.safeRoutePurple
+                            )
                             .clipShape(Capsule())
                     }
                 }
@@ -261,7 +354,12 @@ struct ActiveNavigationView: View {
                 .foregroundStyle(Color.safeRoutePurple)
 
             Text(value)
-                .font(.system(size: 15, weight: .semibold))
+                .font(
+                    .system(
+                        size: 15,
+                        weight: .semibold
+                    )
+                )
 
             Text(title)
                 .font(.system(size: 12))
@@ -282,7 +380,8 @@ struct ActiveNavigationView: View {
             return distanceText(remainingDistance)
         }
 
-        guard let currentLocation = locationManager.currentLocation,
+        guard let currentLocation =
+                locationManager.currentLocation,
               let endpoint = endingCoordinate(
                 for: currentStep.polyline
               ) else {
@@ -295,27 +394,29 @@ struct ActiveNavigationView: View {
         )
 
         return distanceText(
-            currentLocation.distance(from: endpointLocation)
+            currentLocation.distance(
+                from: endpointLocation
+            )
         )
     }
 
     private var navigationSymbol: String {
-        let lowercasedInstruction =
+        let instruction =
             currentInstruction.lowercased()
 
-        if lowercasedInstruction.contains("left") {
+        if instruction.contains("left") {
             return "arrow.turn.up.left"
         }
 
-        if lowercasedInstruction.contains("right") {
+        if instruction.contains("right") {
             return "arrow.turn.up.right"
         }
 
-        if lowercasedInstruction.contains("arrive") {
+        if instruction.contains("arrive") {
             return "mappin.circle.fill"
         }
 
-        if lowercasedInstruction.contains("continue") {
+        if instruction.contains("continue") {
             return "arrow.up"
         }
 
@@ -339,11 +440,32 @@ struct ActiveNavigationView: View {
         )
 
         let distanceFromStepEnd =
-            location.distance(from: endpointLocation)
+            location.distance(
+                from: endpointLocation
+            )
 
         if distanceFromStepEnd <= 25 {
             advanceToNextStep()
         }
+    }
+
+    private func moveToPreviousStep() {
+        guard !navigationSteps.isEmpty else {
+            return
+        }
+
+        if hasArrived {
+            hasArrived = false
+            currentStepIndex =
+                max(navigationSteps.count - 1, 0)
+            return
+        }
+
+        guard currentStepIndex > 0 else {
+            return
+        }
+
+        currentStepIndex -= 1
     }
 
     private func advanceToNextStep() {
@@ -352,7 +474,8 @@ struct ActiveNavigationView: View {
             return
         }
 
-        if currentStepIndex < navigationSteps.count - 1 {
+        if currentStepIndex <
+            navigationSteps.count - 1 {
             currentStepIndex += 1
         } else {
             hasArrived = true
@@ -368,7 +491,9 @@ struct ActiveNavigationView: View {
 
         let points = polyline.points()
 
-        return points[polyline.pointCount - 1].coordinate
+        return points[
+            polyline.pointCount - 1
+        ].coordinate
     }
 
     private func distanceText(
@@ -382,7 +507,10 @@ struct ActiveNavigationView: View {
 
         let miles = meters / 1_609.344
 
-        return String(format: "%.1f mi", miles)
+        return String(
+            format: "%.1f mi",
+            miles
+        )
     }
 
     private func travelTimeText(
