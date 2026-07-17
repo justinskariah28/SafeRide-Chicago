@@ -1,14 +1,11 @@
 
-//
 //  ReportFormView.swift
 //  SafeRide-Chicago
 //
 //  Improved styling for report form
 //
-
 import PhotosUI
 import SwiftUI
-
 struct ReportFormView: View {
     @State private var name = ""
     @State private var email = ""
@@ -16,7 +13,9 @@ struct ReportFormView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var submitting = false
     @State private var selectedIssues: Set<String> = []
-
+    @State private var otherIssueText = ""
+    @State private var reportSubmitted = false
+    
     let issues = [
         "Issue with recommended route",
         "Construction work",
@@ -24,9 +23,8 @@ struct ReportFormView: View {
         "No accessible entrances",
         "Dim lighting",
         "Too crowded",
-        "Other (describe below)"
+        "Other"
     ]
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -35,28 +33,24 @@ struct ReportFormView: View {
                     Text("Report an Issue")
                         .font(.system(size: 32, weight: .bold))
                         .foregroundStyle(Color.safeRoutePurple)
-
                     Text("Help us improve SafeRoute by reporting issues you encounter.")
                         .font(.system(size: 15))
                         .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal)
                 .padding(.top)
-
                 // Contact Info Card
                 formCard {
                     VStack(alignment: .leading, spacing: 14) {
                         Text("Your information")
                             .font(.headline)
                             .foregroundStyle(Color.safeRoutePurple)
-
                         VStack(spacing: 12) {
                             LabeledField(
                                 label: "Name",
                                 placeholder: "Full name",
                                 text: $name
                             )
-
                             LabeledField(
                                 label: "Email",
                                 placeholder: "name@example.com",
@@ -66,14 +60,12 @@ struct ReportFormView: View {
                         }
                     }
                 }
-
                 // Issue Type Card
                 formCard {
                     VStack(alignment: .leading, spacing: 14) {
                         Text("What happened?")
                             .font(.headline)
                             .foregroundStyle(Color.safeRoutePurple)
-
                         VStack(alignment: .leading, spacing: 10) {
                             ForEach(issues, id: \.self) { issue in
                                 Button(action: {
@@ -89,27 +81,42 @@ struct ReportFormView: View {
                                             ? "checkmark.square.fill"
                                             : "square"
                                         )
-
                                         Text(issue)
-
                                         Spacer()
                                     }
                                 }
                                 .foregroundColor(.primary)
                             }
+                            // Appears only when Other is selected
+                            if selectedIssues.contains("Other") {
+                                TextField(
+                                    "Please describe the issue...",
+                                    text: $otherIssueText,
+                                    axis: .vertical
+                                )
+                                .lineLimit(3...5)
+                                .padding(12)
+                                .background(Color.white)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(
+                                            Color.gray.opacity(0.20),
+                                            lineWidth: 1
+                                        )
+                                }
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 12)
+                                )
+                            }
                         }
-
-                        
                     }
                 }
-
                 // Attachments Card
                 formCard {
                     VStack(alignment: .leading, spacing: 14) {
                         Text("Attachments (optional)")
                             .font(.headline)
                             .foregroundStyle(Color.safeRoutePurple)
-
                         PhotosPicker(
                             selection: $selectedItems,
                             maxSelectionCount: 5,
@@ -129,13 +136,11 @@ struct ReportFormView: View {
                             )
                         }
                         .buttonStyle(.plain)
-
                         Text("\(selectedItems.count) attachment(s) selected")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
                 }
-
                 // Submit Button
                 Button(action: submit) {
                     HStack(spacing: 10) {
@@ -143,65 +148,42 @@ struct ReportFormView: View {
                             ProgressView()
                                 .tint(.white)
                         }
-
                         Text(
                             submitting
-                                ? "Submitting…"
-                                : "Submit Report"
+                            ? "Submitting…"
+                            : "Submit Report"
                         )
                         .font(.system(size: 17, weight: .semibold))
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 54)
                     .foregroundStyle(.white)
-                    .background(
-                        name.isEmpty ||
-                        email.isEmpty ||
-                        descriptionText
-                            .trimmingCharacters(
-                                in: .whitespacesAndNewlines
-                            )
-                            .isEmpty
-                            ? Color.gray.opacity(0.45)
-                            : Color.safeRoutePurple
-                    )
+                    .background(Color.safeRoutePurple)
                     .clipShape(Capsule())
                 }
-                .disabled(
-                    name.isEmpty ||
-                    email.isEmpty ||
-                    descriptionText
-                        .trimmingCharacters(
-                            in: .whitespacesAndNewlines
-                        )
-                        .isEmpty ||
-                    submitting
-                )
                 .padding(.horizontal)
                 .padding(.bottom)
             }
         }
         .background(Color.white)
-        .navigationTitle("Report Form")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func submit() {
-        submitting = true
-
-        // Simulate submission delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-            submitting = false
-
-            // Reset form
-            name = ""
-            email = ""
-            descriptionText = ""
-            selectedItems = []
+        .navigationDestination(isPresented: $reportSubmitted) {
+            ReportSubmittedView()
         }
     }
+    private func submit() {
+        submitting = false
 
-    // Helpers
+        name = ""
+        email = ""
+        descriptionText = ""
+        selectedItems = []
+        selectedIssues = []
+        otherIssueText = ""
+
+        reportSubmitted = true
+        }
+    }
     @ViewBuilder
     private func formCard<Content: View>(
         @ViewBuilder content: () -> Content
@@ -220,31 +202,17 @@ struct ReportFormView: View {
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .padding(.horizontal)
     }
-
-    private func bullet(_ text: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("•")
-            Text(text)
-        }
-        .font(.system(size: 15))
-        .foregroundStyle(.primary)
-    }
-}
-
+//}
 struct LabeledField: View {
     let label: String
     let placeholder: String
-
     @Binding var text: String
-
     var keyboardType: UIKeyboardType = .default
-
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(label)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-
             TextField(placeholder, text: $text)
                 .textInputAutocapitalization(.words)
                 .keyboardType(keyboardType)
@@ -261,10 +229,10 @@ struct LabeledField: View {
         }
     }
 }
-
 #Preview {
     NavigationStack {
         ReportFormView()
     }
 }
+
 
