@@ -12,27 +12,21 @@
 //  Created by 30 BGCC Loan Library on 7/15/26.
 //
 import SwiftUI
-
 struct ReportSubmittedView: View {
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
-
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 80))
                 .foregroundStyle(Color.safeRoutePurple)
-
             Text("Thank You!")
                 .font(.system(size: 34, weight: .bold))
                 .foregroundStyle(Color.safeRoutePurple)
-
-            Text("Thank you for your feedback.")
+            Text("Thank you for your report.")
                 .font(.system(size: 18))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
-
             Spacer()
-
             NavigationLink {
                 WelcomeView()
             } label: {
@@ -45,16 +39,15 @@ struct ReportSubmittedView: View {
                     .clipShape(Capsule())
             }
             .padding(.horizontal, 24)
-            .padding(.bottom, 30)
+            Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
-        .navigationBarBackButtonHidden(true)
+       .navigationBarBackButtonHidden(true)
     }
 }
-
 #Preview {
     NavigationStack {
         ReportSubmittedView()
     }
 }
+
+

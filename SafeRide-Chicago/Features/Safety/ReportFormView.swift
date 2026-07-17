@@ -42,7 +42,7 @@ struct ReportFormView: View {
                 // Contact Info Card
                 formCard {
                     VStack(alignment: .leading, spacing: 14) {
-                        Text("Your information")
+                        Text("Your information*")
                             .font(.headline)
                             .foregroundStyle(Color.safeRoutePurple)
                         VStack(spacing: 12) {
@@ -63,7 +63,7 @@ struct ReportFormView: View {
                 // Issue Type Card
                 formCard {
                     VStack(alignment: .leading, spacing: 14) {
-                        Text("What happened?")
+                        Text("What happened?*")
                             .font(.headline)
                             .foregroundStyle(Color.safeRoutePurple)
                         VStack(alignment: .leading, spacing: 10) {
@@ -142,27 +142,37 @@ struct ReportFormView: View {
                     }
                 }
                 // Submit Button
-                Button(action: submit) {
-                    HStack(spacing: 10) {
-                        if submitting {
-                            ProgressView()
-                                .tint(.white)
+                if canSubmit {
+                    Button(action: submit) {
+                        HStack(spacing: 10) {
+                            if submitting {
+                                ProgressView()
+                                    .tint(.white)
+                            }
+
+                            Text(
+                                submitting
+                                ? "Submitting…"
+                                : "Submit Report"
+                            )
+                            .font(.system(size: 17, weight: .semibold))
                         }
-                        Text(
-                            submitting
-                            ? "Submitting…"
-                            : "Submit Report"
-                        )
-                        .font(.system(size: 17, weight: .semibold))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 54)
+                        .foregroundStyle(.white)
+                        .background(Color.safeRoutePurple)
+                        .clipShape(Capsule())
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .foregroundStyle(.white)
-                    .background(Color.safeRoutePurple)
-                    .clipShape(Capsule())
+                    .padding(.horizontal)
+                    .padding(.bottom)
                 }
-                .padding(.horizontal)
-                .padding(.bottom)
+                else{
+                    Text("*Please fill out all required fields.")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                }
+                
             }
         }
         .background(Color.white)
@@ -170,6 +180,25 @@ struct ReportFormView: View {
         .navigationDestination(isPresented: $reportSubmitted) {
             ReportSubmittedView()
         }
+    }
+    private var canSubmit: Bool {
+        let hasName = !name.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        ).isEmpty
+
+        let hasEmail = !email.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        ).isEmpty
+
+        let hasIssue = !selectedIssues.isEmpty
+
+        let otherValid =
+            !selectedIssues.contains("Other") ||
+            !otherIssueText.trimmingCharacters(
+                in: .whitespacesAndNewlines
+            ).isEmpty
+
+        return hasName && hasEmail && hasIssue && otherValid
     }
     private func submit() {
         submitting = false
@@ -182,7 +211,7 @@ struct ReportFormView: View {
         otherIssueText = ""
 
         reportSubmitted = true
-        }
+    }
     }
     @ViewBuilder
     private func formCard<Content: View>(
@@ -202,7 +231,7 @@ struct ReportFormView: View {
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .padding(.horizontal)
     }
-//}
+
 struct LabeledField: View {
     let label: String
     let placeholder: String
