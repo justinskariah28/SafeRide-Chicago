@@ -182,7 +182,7 @@ struct ReportFormView: View {
             }
         }
         .background(Color.white)
-      //  .navigationTitle("Report Form")
+        .navigationTitle("Report Form")
         .navigationBarTitleDisplayMode(.inline)
     }
 

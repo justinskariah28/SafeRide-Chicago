@@ -77,6 +77,12 @@ struct ActiveNavigationView: View {
 
             navigationCard
         }
+        /*
+         The ZStack itself must extend to the physical bottom of the
+         screen. This moves the navigation card below the bottom safe
+         area instead of leaving an empty strip beneath it.
+         */
+        .ignoresSafeArea(edges: .bottom)
         .navigationTitle("Navigation")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -335,8 +341,6 @@ struct ActiveNavigationView: View {
         let distanceFromStepEnd =
             location.distance(from: endpointLocation)
 
-        // Advance when the user is within roughly 25 meters
-        // of the end of the current route step.
         if distanceFromStepEnd <= 25 {
             advanceToNextStep()
         }

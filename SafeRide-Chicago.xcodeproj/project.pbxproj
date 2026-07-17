@@ -7,12 +7,28 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SafeRide-Chicago.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEB803BA3008320200C837A2 /* SafeRoute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SafeRoute.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CEB802FF3008158100C837A2 /* Exceptions for "SafeRide-Chicago" folder in "SafeRoute" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Features/Resources/SafeRoute.app,
+			);
+			target = CE8D82292FFD4E51004907D0 /* SafeRoute */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CE8D822C2FFD4E51004907D0 /* SafeRide-Chicago */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CEB802FF3008158100C837A2 /* Exceptions for "SafeRide-Chicago" folder in "SafeRoute" target */,
+			);
+			explicitFileTypes = {
+				Features/Resources/SafeRoute.app = wrapper.application;
+			};
 			path = "SafeRide-Chicago";
 			sourceTree = "<group>";
 		};
@@ -33,16 +49,16 @@
 			isa = PBXGroup;
 			children = (
 				CE8D822C2FFD4E51004907D0 /* SafeRide-Chicago */,
-				CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */,
+				CEB803BA3008320200C837A2 /* SafeRoute.app */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CE8D82292FFD4E51004907D0 /* SafeRide-Chicago */ = {
+		CE8D82292FFD4E51004907D0 /* SafeRoute */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CE8D82352FFD4E54004907D0 /* Build configuration list for PBXNativeTarget "SafeRide-Chicago" */;
+			buildConfigurationList = CE8D82352FFD4E54004907D0 /* Build configuration list for PBXNativeTarget "SafeRoute" */;
 			buildPhases = (
 				CE8D82262FFD4E51004907D0 /* Sources */,
 				CE8D82272FFD4E51004907D0 /* Frameworks */,
@@ -55,11 +71,11 @@
 			fileSystemSynchronizedGroups = (
 				CE8D822C2FFD4E51004907D0 /* SafeRide-Chicago */,
 			);
-			name = "SafeRide-Chicago";
+			name = SafeRoute;
 			packageProductDependencies = (
 			);
 			productName = "SafeRide-Chicago";
-			productReference = CEB801803007D7EC00C837A2 /* SafeRide-Chicago.app */;
+			productReference = CEB803BA3008320200C837A2 /* SafeRoute.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -91,7 +107,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CE8D82292FFD4E51004907D0 /* SafeRide-Chicago */,
+				CE8D82292FFD4E51004907D0 /* SafeRoute */,
 			);
 		};
 /* End PBXProject section */
@@ -246,6 +262,7 @@
 				DEVELOPMENT_TEAM = C56NTGMH5R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -278,6 +295,7 @@
 				DEVELOPMENT_TEAM = C56NTGMH5R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,7 +330,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CE8D82352FFD4E54004907D0 /* Build configuration list for PBXNativeTarget "SafeRide-Chicago" */ = {
+		CE8D82352FFD4E54004907D0 /* Build configuration list for PBXNativeTarget "SafeRoute" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CE8D82362FFD4E54004907D0 /* Debug */,
