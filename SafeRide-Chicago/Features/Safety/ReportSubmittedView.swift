@@ -39,7 +39,7 @@ struct ReportSubmittedView: View {
                     .clipShape(Capsule())
             }
             .padding(.horizontal, 24)
-            Spacer()
+            .padding(.bottom, 30)
         }
        .navigationBarBackButtonHidden(true)
     }
