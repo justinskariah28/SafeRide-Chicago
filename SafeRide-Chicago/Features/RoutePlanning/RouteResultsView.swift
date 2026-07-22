@@ -9,6 +9,9 @@ import SwiftUI
 import MapKit
 
 struct RouteResultsView: View {
+    private static let ratingPredictor =
+        RouteRatingPredictorManager()
+
     let startingLocation: String
     let destination: String
     let travelMode: TravelMode
@@ -18,6 +21,9 @@ struct RouteResultsView: View {
     @State private var selectedOption: RouteOption?
     @State private var isLoading = true
     @State private var errorMessage = ""
+
+    @State private var isRoutePanelExpanded = false
+    @GestureState private var routePanelDragOffset: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -113,95 +119,242 @@ struct RouteResultsView: View {
     // MARK: - Results View
 
     private var resultsView: some View {
-        VStack(spacing: 0) {
-            RouteMapView(
-                selectedRoute: selectedOption?.route,
-                allRoutes: routeOptions.map {
-                    $0.route
-                }
+        GeometryReader { geometry in
+            let collapsedHeight = min(
+                max(geometry.size.height * 0.48, 360),
+                430
             )
-            .frame(height: 330)
 
-            VStack(
-                alignment: .leading,
-                spacing: 14
-            ) {
-                Text("Choose your route")
-                    .font(
-                        .system(
-                            size: 26,
-                            weight: .bold
-                        )
-                    )
-                    .foregroundStyle(
-                        Color.safeRoutePurple
-                    )
+            let expandedHeight = max(
+                geometry.size.height - 8,
+                collapsedHeight
+            )
 
-                Text(
-                    "\(startingLocation) → \(destination)"
+            let restingHeight =
+                isRoutePanelExpanded
+                ? expandedHeight
+                : collapsedHeight
+
+            let draggedHeight =
+                restingHeight - routePanelDragOffset
+
+            let panelHeight = min(
+                max(draggedHeight, collapsedHeight),
+                expandedHeight
+            )
+
+            ZStack(alignment: .bottom) {
+                RouteMapView(
+                    selectedRoute: selectedOption?.route,
+                    allRoutes: routeOptions.map {
+                        $0.route
+                    }
                 )
-                .font(.system(size: 15))
-                .foregroundStyle(.secondary)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity
+                )
 
-                ScrollView {
-                    VStack(spacing: 12) {
-                        ForEach(routeOptions) { option in
-                            RouteOptionCard(
-                                option: option,
-                                isSelected:
-                                    selectedOption?.id ==
-                                    option.id
-                            ) {
-                                selectedOption = option
-                            }
+                routePanel(
+                    height: panelHeight
+                )
+            }
+        }
+    }
+
+    private func routePanel(
+        height: CGFloat
+    ) -> some View {
+        VStack(
+            alignment: .leading,
+            spacing: 14
+        ) {
+            routePanelHandle
+
+            Text("Choose your route")
+                .font(
+                    .system(
+                        size: 26,
+                        weight: .bold
+                    )
+                )
+                .foregroundStyle(
+                    Color.safeRoutePurple
+                )
+
+            Text(
+                "\(startingLocation) → \(destination)"
+            )
+            .font(.system(size: 15))
+            .foregroundStyle(.secondary)
+            .lineLimit(2)
+
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(routeOptions) { option in
+                        RouteOptionCard(
+                            option: option,
+                            isSelected:
+                                selectedOption?.id ==
+                                option.id
+                        ) {
+                            selectedOption = option
                         }
                     }
-                    .padding(.bottom, 16)
                 }
+                .padding(.bottom, 8)
+            }
+            .scrollIndicators(.visible)
 
-                if let selectedOption {
-                    NavigationLink {
-                        ActiveNavigationView(
-                            route: selectedOption.route,
-                            destinationName: destination
-                        )
-                    } label: {
-                        Text(
-                            "Start \(selectedOption.title) Route"
-                        )
-                        .font(
-                            .system(
-                                size: 17,
-                                weight: .semibold
-                            )
-                        )
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .foregroundStyle(.white)
-                        .background(
-                            Color.safeRoutePurple
-                        )
-                        .clipShape(Capsule())
+            routeStartButton
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 20)
+        .frame(maxWidth: .infinity)
+        .frame(
+            height: height,
+            alignment: .top
+        )
+        .background(Color.white)
+        .clipShape(
+            UnevenRoundedRectangle(
+                topLeadingRadius: 26,
+                topTrailingRadius: 26
+            )
+        )
+        .shadow(
+            color: Color.black.opacity(0.18),
+            radius: 12,
+            y: -3
+        )
+        .animation(
+            .spring(
+                response: 0.38,
+                dampingFraction: 0.86
+            ),
+            value: isRoutePanelExpanded
+        )
+    }
+
+    private var routePanelHandle: some View {
+        VStack(spacing: 7) {
+            Capsule()
+                .fill(
+                    Color.secondary.opacity(0.40)
+                )
+                .frame(
+                    width: 48,
+                    height: 6
+                )
+
+            Image(
+                systemName:
+                    isRoutePanelExpanded
+                    ? "chevron.down"
+                    : "chevron.up"
+            )
+            .font(
+                .system(
+                    size: 12,
+                    weight: .bold
+                )
+            )
+            .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 10)
+        .padding(.bottom, 2)
+        .contentShape(Rectangle())
+        .gesture(routePanelDragGesture)
+        .onTapGesture {
+            withAnimation(
+                .spring(
+                    response: 0.38,
+                    dampingFraction: 0.86
+                )
+            ) {
+                isRoutePanelExpanded.toggle()
+            }
+        }
+        .accessibilityElement()
+        .accessibilityLabel("Route options panel")
+        .accessibilityHint(
+            isRoutePanelExpanded
+            ? "Swipe down or double tap to collapse."
+            : "Swipe up or double tap to expand."
+        )
+        .accessibilityAction {
+            isRoutePanelExpanded.toggle()
+        }
+    }
+
+    private var routePanelDragGesture: some Gesture {
+        DragGesture(minimumDistance: 5)
+            .updating(
+                $routePanelDragOffset
+            ) { value, state, _ in
+                state = value.translation.height
+            }
+            .onEnded { value in
+                let movement =
+                    value.predictedEndTranslation.height
+
+                withAnimation(
+                    .spring(
+                        response: 0.38,
+                        dampingFraction: 0.86
+                    )
+                ) {
+                    if movement < -50 {
+                        isRoutePanelExpanded = true
+                    } else if movement > 50 {
+                        isRoutePanelExpanded = false
                     }
-                } else {
-                    Text("Select a Route")
-                        .font(
-                            .system(
-                                size: 17,
-                                weight: .semibold
-                            )
-                        )
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .foregroundStyle(.white)
-                        .background(
-                            Color.gray.opacity(0.45)
-                        )
-                        .clipShape(Capsule())
                 }
             }
-            .padding(20)
-            .background(Color.white)
+    }
+
+    @ViewBuilder
+    private var routeStartButton: some View {
+        if let selectedOption {
+            NavigationLink {
+                ActiveNavigationView(
+                    route: selectedOption.route,
+                    destinationName: destination
+                )
+            } label: {
+                Text(
+                    "Start \(selectedOption.title) Route"
+                )
+                .font(
+                    .system(
+                        size: 17,
+                        weight: .semibold
+                    )
+                )
+                .frame(maxWidth: .infinity)
+                .frame(height: 56)
+                .foregroundStyle(.white)
+                .background(
+                    Color.safeRoutePurple
+                )
+                .clipShape(Capsule())
+            }
+        } else {
+            Text("Select a Route")
+                .font(
+                    .system(
+                        size: 17,
+                        weight: .semibold
+                    )
+                )
+                .frame(maxWidth: .infinity)
+                .frame(height: 56)
+                .foregroundStyle(.white)
+                .background(
+                    Color.gray.opacity(0.45)
+                )
+                .clipShape(Capsule())
         }
     }
 
@@ -255,7 +408,6 @@ struct RouteResultsView: View {
                 return
             }
 
-            
             let builtOptions =
                 makeRouteOptions(
                     from: routes
@@ -491,40 +643,6 @@ struct RouteResultsView: View {
 
     // MARK: - Build Route Options
 
-    private func predictedRating(for result: ScoredRoute) -> Double? {
-
-        let predictor = RouteRatingPredictorManager()
-
-        let analysis = result.analysis
-
-        let obstacleCount = analysis.matchedStreetSegments.reduce(0) {
-            $0 + $1.obstacles.count
-        }
-
-        let rating = predictor?.predictRating(
-            prefStepFree: selectedPreferences.contains("Step-free route"),
-            prefFewerCrossings: selectedPreferences.contains("Fewer crossings"),
-            prefWellLit: selectedPreferences.contains("Well-lit streets"),
-            prefSafeSpots: selectedPreferences.contains("Nearby Safe Spots"),
-            prefAvoidCrowds: selectedPreferences.contains("Avoid crowded areas"),
-
-            routeAccessibility: analysis.wheelchairAccessibleRatio,
-            routeSidewalkQuality: analysis.goodSidewalkRatio,
-            routeLighting: analysis.averageLightingScore ?? 0,
-            routeSafeSpots: analysis.nearbySafeSpots.count,
-            routeCrowding: analysis.averageCrowdingScore ?? 0.4,
-            obstacleCount: obstacleCount,
-            travelTime: analysis.travelTimeMinutes,
-            turnCount: analysis.turnCount,
-            distanceMeters: analysis.distanceMeters
-        )
-
-        guard let rating else { return nil }
-
-        return (rating * 10).rounded() / 10
-    }
-    
-    
     private func makeRouteOptions(
         from routes: [MKRoute]
     ) -> [RouteOption] {
@@ -532,7 +650,6 @@ struct RouteResultsView: View {
         guard !routes.isEmpty else {
             return []
         }
-        
 
         guard let recommendedResult =
                 RouteScorer.recommendedRoute(
@@ -565,8 +682,6 @@ struct RouteResultsView: View {
                 selectedPreferences:
                     selectedPreferences
             )
-        
-        
 
         let recommendedReason =
             recommendedResult.reasons
@@ -583,16 +698,31 @@ struct RouteResultsView: View {
                 from: simplestResult
             )
 
+        let recommendedRating =
+            predictedRating(
+                for: recommendedResult
+            )
+
+        let fastestRating =
+            predictedRating(
+                for: fastestResult
+            )
+
+        let simplestRating =
+            predictedRating(
+                for: simplestResult
+            )
+
         return [
             RouteOption(
                 type: .recommended,
-                route:
-                    recommendedResult.route,
+                route: recommendedResult.route,
                 accessibilityScore:
                     displayScore(
                         recommendedResult.score
                     ),
-                predictedRating: predictedRating(for: recommendedResult),
+                predictedRating:
+                    recommendedRating,
                 reason:
                     recommendedReason.isEmpty
                     ? "Best match for your selected accessibility preferences."
@@ -606,7 +736,8 @@ struct RouteResultsView: View {
                     displayScore(
                         fastestResult.score
                     ),
-                predictedRating: predictedRating(for: fastestResult),
+                predictedRating:
+                    fastestRating,
                 reason: fastestReason
             ),
 
@@ -617,10 +748,129 @@ struct RouteResultsView: View {
                     displayScore(
                         simplestResult.score
                     ),
-                predictedRating: predictedRating(for: simplestResult),
+                predictedRating:
+                    simplestRating,
                 reason: simplestReason
             )
         ]
+    }
+
+    // MARK: - ML Rating
+
+    private func predictedRating(
+        for result: ScoredRoute
+    ) -> Double? {
+        guard let predictor =
+                Self.ratingPredictor else {
+            return nil
+        }
+
+        let preferences =
+            Set(selectedPreferences)
+
+        let obstacleCount =
+            result.analysis
+                .matchedStreetSegments
+                .reduce(0) {
+                    partialResult,
+                    segment in
+
+                    partialResult +
+                        segment.obstacles.count
+                }
+            +
+            result.analysis
+                .traversedAccessibleAreas
+                .reduce(0) {
+                    partialResult,
+                    area in
+
+                    partialResult +
+                        area.obstacles.count
+                }
+
+        return predictor.predictRating(
+            prefStepFree:
+                preferences.contains(
+                    RoutePreferenceName
+                        .stepFreeRoute
+                ),
+
+            prefFewerCrossings:
+                prefersFewerCrossings,
+
+            prefWellLit:
+                preferences.contains(
+                    RoutePreferenceName
+                        .wellLitStreets
+                ),
+
+            prefSafeSpots:
+                preferences.contains(
+                    RoutePreferenceName
+                        .nearbySafeSpots
+                ),
+
+            prefAvoidCrowds:
+                preferences.contains(
+                    RoutePreferenceName
+                        .avoidCrowdedAreas
+                ),
+
+            routeAccessibility:
+                result.analysis
+                    .wheelchairAccessibleRatio,
+
+            routeSidewalkQuality:
+                result.analysis
+                    .goodSidewalkRatio,
+
+            routeLighting:
+                result.analysis
+                    .averageLightingScore
+                ?? 0.0,
+
+            routeSafeSpots:
+                result.analysis
+                    .nearbySafeSpots.count,
+
+            routeCrowding:
+                result.analysis
+                    .averageCrowdingScore
+                ?? 0.4,
+
+            obstacleCount:
+                obstacleCount,
+
+            travelTime:
+                result.analysis
+                    .travelTimeMinutes,
+
+            turnCount:
+                result.analysis
+                    .turnCount,
+
+            distanceMeters:
+                result.analysis
+                    .distanceMeters
+        )
+    }
+
+    private var prefersFewerCrossings: Bool {
+        selectedPreferences.contains {
+            preference in
+
+            let normalized =
+                preference.lowercased()
+
+            return normalized.contains(
+                "fewer crossing"
+            )
+            ||
+            normalized.contains(
+                "simple"
+            )
+        }
     }
 
     // MARK: - Card Reasons

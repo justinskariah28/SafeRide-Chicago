@@ -8,7 +8,11 @@
 import Foundation
 import MapKit
 
-enum RouteOptionType: String, CaseIterable, Identifiable {
+enum RouteOptionType:
+    String,
+    CaseIterable,
+    Identifiable
+{
     case recommended = "Recommended"
     case fastest = "Fastest"
     case simplest = "Simplest"
@@ -21,37 +25,67 @@ enum RouteOptionType: String, CaseIterable, Identifiable {
         switch self {
         case .recommended:
             return "sparkles"
+
         case .fastest:
             return "bolt.fill"
+
         case .simplest:
-            return "arrow.triangle.turn.up.right.circle.fill"
+            return """
+            arrow.triangle.turn.up.right.circle.fill
+            """
         }
     }
 }
 
 struct RouteOption: Identifiable {
     let id = UUID()
+
     let type: RouteOptionType
     let route: MKRoute
     let accessibilityScore: Int
     let predictedRating: Double?
     let reason: String
 
+    init(
+        type: RouteOptionType,
+        route: MKRoute,
+        accessibilityScore: Int,
+        predictedRating: Double? = nil,
+        reason: String
+    ) {
+        self.type = type
+        self.route = route
+        self.accessibilityScore =
+            accessibilityScore
+        self.predictedRating =
+            predictedRating
+        self.reason = reason
+    }
+
     var title: String {
         type.rawValue
     }
 
     var travelTimeText: String {
-        let minutes = Int(route.expectedTravelTime / 60)
+        let minutes =
+            Int(route.expectedTravelTime / 60)
+
         return "\(max(minutes, 1)) min"
     }
 
     var distanceText: String {
-        let miles = route.distance / 1609.34
-        return String(format: "%.1f mi", miles)
+        let miles =
+            route.distance / 1609.34
+
+        return String(
+            format: "%.1f mi",
+            miles
+        )
     }
 
     var stepCount: Int {
-        route.steps.filter { !$0.instructions.isEmpty }.count
+        route.steps.filter {
+            !$0.instructions.isEmpty
+        }.count
     }
 }

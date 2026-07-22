@@ -35,7 +35,7 @@ struct RouteOptionCard: View {
                             }
                             .foregroundStyle(Color.safeRoutePurple)
 
-                            Text("AI rating")
+                            Text("Rating")
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(.secondary)
                         }
