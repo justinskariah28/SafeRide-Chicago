@@ -34,6 +34,7 @@ struct RouteOption: Identifiable {
     let type: RouteOptionType
     let route: MKRoute
     let accessibilityScore: Int
+    let predictedRating: Double?
     let reason: String
 
     var title: String {

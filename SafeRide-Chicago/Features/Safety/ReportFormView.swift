@@ -7,14 +7,13 @@
 import PhotosUI
 import SwiftUI
 struct ReportFormView: View {
-    @State private var name = ""
-    @State private var email = ""
     @State private var descriptionText = ""
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var submitting = false
     @State private var selectedIssues: Set<String> = []
     @State private var otherIssueText = ""
     @State private var reportSubmitted = false
+    @State private var comments = ""
     
     let issues = [
         "Issue with recommended route",
@@ -40,26 +39,7 @@ struct ReportFormView: View {
                 .padding(.horizontal)
                 .padding(.top)
                 // Contact Info Card
-                formCard {
-                    VStack(alignment: .leading, spacing: 14) {
-                        Text("Your information*")
-                            .font(.headline)
-                            .foregroundStyle(Color.safeRoutePurple)
-                        VStack(spacing: 12) {
-                            LabeledField(
-                                label: "Name",
-                                placeholder: "Full name",
-                                text: $name
-                            )
-                            LabeledField(
-                                label: "Email",
-                                placeholder: "name@example.com",
-                                text: $email,
-                                keyboardType: .emailAddress
-                            )
-                        }
-                    }
-                }
+               
                 // Issue Type Card
                 formCard {
                     VStack(alignment: .leading, spacing: 14) {
@@ -111,6 +91,27 @@ struct ReportFormView: View {
                         }
                     }
                 }
+                
+               
+                // MARK: Comments
+                formCard {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Additional Comments")
+                            .font(.headline)
+                            .foregroundStyle(Color.safeRoutePurple)
+
+                        TextEditor(text: $descriptionText)
+                            .frame(height: 90)
+                            .padding(8)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.gray.opacity(0.20), lineWidth: 1)
+                            }
+                    }
+                }
+                
                 // Attachments Card
                 formCard {
                     VStack(alignment: .leading, spacing: 14) {
@@ -182,13 +183,6 @@ struct ReportFormView: View {
         }
     }
     private var canSubmit: Bool {
-        let hasName = !name.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        ).isEmpty
-
-        let hasEmail = !email.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        ).isEmpty
 
         let hasIssue = !selectedIssues.isEmpty
 
@@ -198,14 +192,13 @@ struct ReportFormView: View {
                 in: .whitespacesAndNewlines
             ).isEmpty
 
-        return hasName && hasEmail && hasIssue && otherValid
+        return hasIssue && otherValid
     }
     private func submit() {
         submitting = false
 
-        name = ""
-        email = ""
         descriptionText = ""
+        comments = ""          // <-- Clear comments too
         selectedItems = []
         selectedIssues = []
         otherIssueText = ""

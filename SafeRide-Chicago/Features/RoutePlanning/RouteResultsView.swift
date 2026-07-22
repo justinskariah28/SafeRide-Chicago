@@ -255,6 +255,7 @@ struct RouteResultsView: View {
                 return
             }
 
+            
             let builtOptions =
                 makeRouteOptions(
                     from: routes
@@ -490,6 +491,40 @@ struct RouteResultsView: View {
 
     // MARK: - Build Route Options
 
+    private func predictedRating(for result: ScoredRoute) -> Double? {
+
+        let predictor = RouteRatingPredictorManager()
+
+        let analysis = result.analysis
+
+        let obstacleCount = analysis.matchedStreetSegments.reduce(0) {
+            $0 + $1.obstacles.count
+        }
+
+        let rating = predictor?.predictRating(
+            prefStepFree: selectedPreferences.contains("Step-free route"),
+            prefFewerCrossings: selectedPreferences.contains("Fewer crossings"),
+            prefWellLit: selectedPreferences.contains("Well-lit streets"),
+            prefSafeSpots: selectedPreferences.contains("Nearby Safe Spots"),
+            prefAvoidCrowds: selectedPreferences.contains("Avoid crowded areas"),
+
+            routeAccessibility: analysis.wheelchairAccessibleRatio,
+            routeSidewalkQuality: analysis.goodSidewalkRatio,
+            routeLighting: analysis.averageLightingScore ?? 0,
+            routeSafeSpots: analysis.nearbySafeSpots.count,
+            routeCrowding: analysis.averageCrowdingScore ?? 0.4,
+            obstacleCount: obstacleCount,
+            travelTime: analysis.travelTimeMinutes,
+            turnCount: analysis.turnCount,
+            distanceMeters: analysis.distanceMeters
+        )
+
+        guard let rating else { return nil }
+
+        return (rating * 10).rounded() / 10
+    }
+    
+    
     private func makeRouteOptions(
         from routes: [MKRoute]
     ) -> [RouteOption] {
@@ -497,6 +532,7 @@ struct RouteResultsView: View {
         guard !routes.isEmpty else {
             return []
         }
+        
 
         guard let recommendedResult =
                 RouteScorer.recommendedRoute(
@@ -529,6 +565,8 @@ struct RouteResultsView: View {
                 selectedPreferences:
                     selectedPreferences
             )
+        
+        
 
         let recommendedReason =
             recommendedResult.reasons
@@ -554,6 +592,7 @@ struct RouteResultsView: View {
                     displayScore(
                         recommendedResult.score
                     ),
+                predictedRating: predictedRating(for: recommendedResult),
                 reason:
                     recommendedReason.isEmpty
                     ? "Best match for your selected accessibility preferences."
@@ -567,6 +606,7 @@ struct RouteResultsView: View {
                     displayScore(
                         fastestResult.score
                     ),
+                predictedRating: predictedRating(for: fastestResult),
                 reason: fastestReason
             ),
 
@@ -577,6 +617,7 @@ struct RouteResultsView: View {
                     displayScore(
                         simplestResult.score
                     ),
+                predictedRating: predictedRating(for: simplestResult),
                 reason: simplestReason
             )
         ]

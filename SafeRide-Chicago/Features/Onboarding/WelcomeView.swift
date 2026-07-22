@@ -70,7 +70,6 @@ struct WelcomeView: View {
         .padding(.bottom, 30)
         .background(Color.white)
         .navigationBarBackButtonHidden(true)
-
     }
 }
 
